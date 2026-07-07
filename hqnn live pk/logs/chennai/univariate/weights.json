@@ -4486,5 +4486,23 @@
     "retrained": false,
     "mean_change": 1.3e-05,
     "qweight": null
+  },
+  {
+    "date": "2026-07-02",
+    "target": "TMP2m",
+    "kind": "retrain",
+    "mean_change": 0.000858
+  },
+  {
+    "date": "2026-07-02",
+    "target": "RH2m",
+    "kind": "retrain",
+    "mean_change": 0.000518
+  },
+  {
+    "date": "2026-07-02",
+    "target": "PRmsl",
+    "kind": "retrain",
+    "mean_change": -0.000464
   }
 ]
