@@ -1,0 +1,24 @@
+# India Weather Forecast — Python dependencies
+# Install:  pip install -r requirements.txt
+# (use a fresh venv; on Windows with an NVIDIA GPU install the CUDA torch build
+#  from https://pytorch.org per your CUDA version.)
+
+# Core ML
+torch>=2.1
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3
+joblib>=1.3
+
+# Quantum (QLSTM / QGRU)
+pennylane>=0.34
+
+# Hyperparameter tuning
+optuna>=3.4
+
+# Backend / API
+fastapi>=0.110
+uvicorn>=0.27
+
+# Data sources (NASA POWER + Open-Meteo ERA5)
+requests>=2.31

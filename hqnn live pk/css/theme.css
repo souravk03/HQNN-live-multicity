@@ -1,0 +1,58 @@
+/* theme.css — THE single source of colour. Light + dark (AMOLED) only.
+   Rule: body text is var(--ink) = pure black on light, pure white on dark.
+   No grey text anywhere (--mute == --ink). Switch theme by setting
+   data-theme="dark" on <html>. Nothing else should hardcode colours. */
+
+:root,
+:root[data-theme="light"]{
+  /* surfaces (light, softened — not pure white) */
+  --bg:#e9eef5; --card:#f7f9fc; --card2:#eef2f7; --line:#dde4ee; --line2:#e6ebf2;
+  /* text — always black on light */
+  --ink:#000000; --ink2:#000000; --mute:#000000; --on-accent:#ffffff;
+  /* blue */
+  --blue:#3b82c4; --blue-soft:#e4eefa; --blue-ink:#184f82; --blue-line:#cfe0f3;
+  /* teal */
+  --teal:#2f9c83; --teal-soft:#e0f1ea; --teal-ink:#15614e; --teal-line:#bfe3d4;
+  /* violet */
+  --violet:#7c5cc4; --violet-soft:#ebe4f8; --violet-ink:#4f3a96; --violet-line:#d8c9f5;
+  /* amber */
+  --amber:#d8842f; --amber-soft:#f7e9d6; --amber-ink:#8a4f12; --amber-line:#eecb9e;
+  /* red */
+  --red:#d8596b; --red-soft:#f7dee2; --red-ink:#8f2436; --red-line:#f0c2c9;
+  /* semantic */
+  --good:#3aa86a; --good-ink:#0b3d1e; --bad:var(--red); --warn:var(--amber);
+  /* charts */
+  --chart-ink:#000000; --chart-grid:rgba(20,30,48,.08); --chart-axis:#8a99ab;
+  --tip-bg:rgba(255,255,255,.97); --tip-line:#cdd8e6;
+  /* effects + fonts */
+  --sh:0 1px 2px rgba(16,40,70,.05),0 4px 16px rgba(16,40,70,.06);
+  --disp:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif;
+  /* legacy aliases (kept so existing rules resolve) */
+  --chip:rgba(0,0,0,.05);
+  /* map temperature fills — deeper in light so they don't wash out on the card */
+  --heat-warm:#f0c4ab; --heat-mild:#c7decd; --heat-cool:#bdd3ec; --heat-none:#ffffff;
+  --map-area:#ffffff; --map-line:#101010;   /* map landmass white, district lines black — both themes */
+  --blue-bd:var(--blue-line); --teal-bd:var(--teal-line); --violet-bd:var(--violet-line); --amber-bd:var(--amber-line);
+  --sky:var(--bg); --sky2:var(--card2);
+}
+
+:root[data-theme="dark"]{
+  /* surfaces — AMOLED true black page, near-black cards */
+  --bg:#000000; --card:#0d0e11; --card2:#15171c; --line:#262931; --line2:#1b1d23;
+  /* text — always white on dark */
+  --ink:#ffffff; --ink2:#ffffff; --mute:#ffffff; --on-accent:#ffffff;
+  /* accents — brighter so they read on black */
+  --blue:#5aa0e0; --blue-soft:#102537; --blue-ink:#bcd9f5; --blue-line:#1d3a57;
+  --teal:#46c0a3; --teal-soft:#0e2922; --teal-ink:#9fe3d4; --teal-line:#1f4a3e;
+  --violet:#a78be6; --violet-soft:#1f1933; --violet-ink:#d6c7f3; --violet-line:#3a2e57;
+  --amber:#e7a24a; --amber-soft:#2f2209; --amber-ink:#f2c48f; --amber-line:#4a3415;
+  --red:#e87d8c; --red-soft:#311217; --red-ink:#f3c0c8; --red-line:#5a2730;
+  --good:#34c06a; --good-ink:#04230f; --bad:var(--red); --warn:var(--amber);
+  /* charts */
+  --chart-ink:#ffffff; --chart-grid:rgba(255,255,255,.10); --chart-axis:#8a98a8;
+  --tip-bg:rgba(20,22,28,.97); --tip-line:#33373f;
+  --sh:0 1px 2px rgba(0,0,0,.5),0 6px 20px rgba(0,0,0,.55);
+  --chip:rgba(255,255,255,.10);
+  --heat-warm:#f0c4ab; --heat-mild:#c7decd; --heat-cool:#bdd3ec; --heat-none:#ffffff;
+  --sky:var(--bg); --sky2:var(--card2);
+}

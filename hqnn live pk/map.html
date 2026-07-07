@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("iwf_theme")||"light");}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Weather Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  html,body{height:100%; margin:0; overflow:hidden}            /* no page scroll */
+  .shell{height:100vh; display:flex; flex-direction:column; padding:10px 14px; box-sizing:border-box}
+  .stickybar{flex:0 0 auto; margin:0 0 10px}
+  .maprow{flex:1 1 auto; display:grid; grid-template-columns:1fr minmax(240px,300px); gap:14px; min-height:0}
+  @media(max-width:820px){.maprow{grid-template-columns:1fr}}
+  .mapcard{background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--sh);
+    padding:12px 14px; position:relative; display:flex; flex-direction:column; min-height:0}
+  .mapcard h2{padding:0;border:none;margin:0 0 4px;font-size:17px}
+  .mapcard .ph{margin:0 0 6px;font-size:14px}
+  #mapHost{flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center}
+  #indiaSvg{width:100%; height:100%; max-height:100%; display:block}
+  .stpath{fill:var(--map-area); stroke:var(--map-line); stroke-width:.5; transition:fill .12s; cursor:default}
+  .stpath.nomodel{fill:var(--map-area)}
+  .stpath.t-warm{fill:var(--heat-warm)} .stpath.t-mild{fill:var(--heat-mild)} .stpath.t-cool{fill:var(--heat-cool)}
+  .stpath.livestate{stroke:var(--good); stroke-width:1}
+  .stpath.hover{fill:var(--blue-soft); stroke:var(--blue); stroke-width:1.4}
+  /* hover tooltip */
+  #tip{position:fixed; pointer-events:none; z-index:100; background:var(--card); border:1px solid var(--line);
+    box-shadow:0 6px 22px rgba(16,40,70,.16); border-radius:12px; padding:9px 12px; font-family:var(--sans);
+    font-size:12px; color:var(--ink); display:none; max-width:230px}
+  #tip .tnm{font-weight:700; font-size:13px; margin-bottom:2px}
+  #tip .ttemp{font-family:var(--disp); font-size:22px; font-weight:600; margin:2px 0}
+  #tip .tmeta{color:var(--mute); font-size:11.5px}
+  #tip .tlive{display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--teal-ink); background:var(--teal-soft); border-radius:20px; padding:1px 7px; margin-left:6px}
+  #tip .tnone{color:var(--mute); font-style:italic}
+  .sidecard{flex:0 0 auto}
+  .runmode{margin-top:10px}
+  .runbtns{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px}
+  .runbtn{font:600 14px var(--sans); color:var(--on-accent); background:var(--blue); border:none; border-radius:11px;
+    padding:12px 16px; cursor:pointer; box-shadow:0 2px 10px rgba(43,108,176,.25); width:100%}
+  .runbtn:hover{filter:brightness(1.05)} .runbtn:disabled{opacity:.5; cursor:default; box-shadow:none}
+  .runstat{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink2); font-weight:500; margin-top:10px}
+  .runstat .dot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .runstat .dot.on{background:var(--good); box-shadow:0 0 0 4px rgba(47,158,111,.15)}
+  .miniprog{font-size:11.5px; color:var(--mute); margin-top:10px; flex:1 1 auto; overflow:auto; line-height:1.5; min-height:0}
+  .maplegend{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; font-size:11px; color:var(--mute); flex:0 0 auto}
+  .maplegend i{display:inline-block; width:11px; height:11px; border-radius:3px; margin-right:4px; vertical-align:-1px; border:1px solid var(--map-line)}
+  .backlink{font-size:13px; font-weight:600; color:var(--blue-ink); text-decoration:none}
+  .loadnote{padding:30px 18px; text-align:center; color:var(--mute); font-size:13px}
+</style>
+</head>
+<body>
+<div class="appwrap">
+<div class="shell">
+  <header class="stickybar">
+    <div class="loc"><h1>India Weather Map</h1><span class="sub">whole-country daily cycle</span></div>
+    <div class="hctrl">
+      <a class="backlink" href="dashboard.html">&larr; back to console</a>
+      <label class="ctl"><span class="ctll">Units</span>
+        <span class="toggle" id="unitToggle">
+          <button class="tg active" data-unit="C">&deg;C</button>
+          <button class="tg" data-unit="F">&deg;F</button>
+        </span>
+      </label>
+    </div>
+  </header>
+
+  <div class="maprow">
+    <div class="mapcard">
+      <h2>India &mdash; state temperatures</h2>
+      <div class="ph">Hover any state for its latest forecast. States with a trained model show live numbers; the rest say "no model yet".</div>
+      <div id="mapHost"><div class="loadnote" id="mapLoad">Loading India map&hellip;</div></div>
+      <div class="maplegend">
+        <span><i style="background:var(--heat-warm)"></i>warm (&ge;30&deg;)</span>
+        <span><i style="background:var(--heat-mild)"></i>mild (20&ndash;30&deg;)</span>
+        <span><i style="background:var(--heat-cool)"></i>cool (&lt;20&deg;)</span>
+        <span><i style="background:var(--heat-none)"></i>no model yet</span>
+      </div>
+    </div>
+
+    <div class="mapcard">
+      <h2>Run today's cycle</h2>
+      <div class="ph sidecard">Runs the daily forward cycle for <b>every trained state at once</b> and updates the whole country. States without a model are skipped.</div>
+      <label class="ctl sidecard runmode"><span class="ctll">Mode</span>
+        <span class="toggle" id="runModeToggle">
+          <button class="tg active" data-mode="multivariate">Multivariate</button>
+          <button class="tg" data-mode="univariate">Univariate</button>
+        </span>
+      </label>
+      <div class="runbtns sidecard">
+        <button class="autorun" id="autoBtn" title="Auto-run: keep running cycles back-to-back">&#8635; Auto</button>
+        <button class="runbtn" id="runBtn">Run today's cycle &mdash; all states &rarr;</button>
+      </div>
+      <div class="runstat sidecard"><span class="dot" id="runDot"></span><span id="runText">idle</span></div>
+      <div class="miniprog" id="miniProg"></div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="tip"></div>
+
+<script src="js/ui.js"></script>
+<script>
+// Status page placeholder — wired later.
+(function(){var s=document.getElementById('sbStatus');
+  if(s)s.addEventListener('click',function(e){e.preventDefault();
+    s.classList.add('disabled'); var l=s.querySelector('.sb-label'); if(l)l.textContent='Status (soon)';
+    setTimeout(function(){s.classList.remove('disabled'); if(l)l.textContent='Status';},1200);});})();
+// which states are LIVE (have a trained model) is discovered from the backend at load.
+const GEO_URL="https://cdn.jsdelivr.net/gh/udit-001/india-maps-data@main/geojson/india.geojson";
+// map GeoJSON state name -> backend city key (only the ones whose key differs or matter)
+const NAME2KEY={
+  "Delhi":"delhi","Maharashtra":"maharashtra","Tamil Nadu":"tamil_nadu","Karnataka":"karnataka",
+  "Uttar Pradesh":"uttar_pradesh","Gujarat":"gujarat","Rajasthan":"rajasthan","West Bengal":"west_bengal",
+  "Madhya Pradesh":"madhya_pradesh","Bihar":"bihar","Andhra Pradesh":"andhra_pradesh","Telangana":"telangana",
+  "Kerala":"kerala","Odisha":"odisha","Punjab":"punjab","Haryana":"haryana","Chhattisgarh":"chhattisgarh",
+  "Jharkhand":"jharkhand","Assam":"assam","Uttarakhand":"uttarakhand","Himachal Pradesh":"himachal_pradesh",
+  "Jammu and Kashmir":"jammu_and_kashmir","Goa":"goa","Tripura":"tripura","Meghalaya":"meghalaya",
+  "Manipur":"manipur","Nagaland":"nagaland","Arunachal Pradesh":"arunachal_pradesh","Mizoram":"mizoram",
+  "Sikkim":"sikkim","Ladakh":"ladakh","Puducherry":"puducherry","Chandigarh":"chandigarh",
+  "Andaman and Nicobar Islands":"andaman_nicobar","Lakshadweep":"lakshadweep",
+  "Dadra and Nagar Haveli and Daman and Diu":"dnh_daman_diu"
+};
+let UNIT="C", _es=null;
+const STDATA={};   // st_nm -> {key, temp, rh, pr, live}
+const cToF=c=>Math.round(c*9/5+32);
+const tclass=c=>c==null?null:(c>=30?"t-warm":(c>=20?"t-mild":"t-cool"));
+
+const BBOX={minx:68.0,maxx:97.5,miny:6.5,maxy:37.2}, W=560,H=620,PAD=10;
+function project(lon,lat){return [PAD+((lon-BBOX.minx)/(BBOX.maxx-BBOX.minx))*(W-2*PAD),
+  PAD+((BBOX.maxy-lat)/(BBOX.maxy-BBOX.miny))*(H-2*PAD)];}
+function ringPath(r){let d="";for(let i=0;i<r.length;i++){const p=project(r[i][0],r[i][1]);d+=(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1);}return d+"Z";}
+function geomPath(g){let d="";if(g.type==="Polygon")g.coordinates.forEach(r=>d+=ringPath(r));else if(g.type==="MultiPolygon")g.coordinates.forEach(p=>p.forEach(r=>d+=ringPath(r)));return d;}
+
+// pull each LIVE state's latest forecast. We only query states that have a model;
+// we discover that by trying /live_data and seeing if it has rows.
+async function loadState(stnm){
+  const key=NAME2KEY[stnm]; if(!key) return;
+  try{
+    const r=await fetch('/live_data?city='+key+'&mode=multivariate'); const d=await r.json();
+    const rows=(d&&d.rows)||[];
+    // pick the SAME value the dashboard hero shows: the day+1 (horizon 1) ensemble
+    // forecast from the most recent run (latest made_on). Not the farthest horizon.
+    const pick=t=>{
+      let e=rows.filter(x=>x.model==='ensemble'&&x.target===t);
+      if(!e.length) return null;
+      const h1=e.filter(x=>x.horizon===1);
+      const pool=h1.length?h1:e;
+      pool.sort((a,b)=>{
+        const am=a.made_on||a.forecast_date, bm=b.made_on||b.forecast_date;
+        if(am!==bm) return am<bm?1:-1;           // newest run first
+        return (a.horizon||99)-(b.horizon||99);  // then nearest horizon
+      });
+      return pool[0];
+    };
+    const t=pick('TMP2m'),h=pick('RH2m'),p=pick('PRmsl');
+    const o={key, live:rows.length>0, temp:null, rh:null, pr:null};
+    if(t){o.temp=Math.round(t.prediction*10)/10;}
+    if(h){o.rh=Math.round(h.prediction);}
+    if(p){o.pr=Math.round(p.prediction/100);}
+    STDATA[stnm]=o;
+  }catch(e){ STDATA[stnm]={key, live:false, temp:null}; }
+}
+async function loadAllLive(geo){
+  const names=[...new Set(geo.features.map(f=>f.properties.st_nm))].filter(n=>NAME2KEY[n]);
+  await Promise.all(names.map(loadState));
+}
+
+function paintStates(svg){
+  svg.querySelectorAll('.stpath').forEach(path=>{
+    const st=path.dataset.state, o=STDATA[st];
+    let cls="stpath";
+    if(o&&o.live&&o.temp!=null){const tc=tclass(o.temp); cls+=(tc?" "+tc:"")+" livestate";}
+    else cls+=" nomodel";
+    path.setAttribute("class",cls);
+  });
+}
+function renderMap(geo){
+  const byState={};
+  geo.features.forEach(f=>{const s=f.properties.st_nm;(byState[s]=byState[s]||[]).push(f.geometry);});
+  const NS="http://www.w3.org/2000/svg";
+  const svg=document.createElementNS(NS,"svg"); svg.setAttribute("viewBox","0 0 "+W+" "+H);
+  svg.setAttribute("preserveAspectRatio","xMidYMid meet"); svg.id="indiaSvg";
+  Object.keys(byState).forEach(st=>{
+    const path=document.createElementNS(NS,"path");
+    let d=""; byState[st].forEach(g=>d+=geomPath(g)); path.setAttribute("d",d);
+    path.dataset.state=st; path.setAttribute("class","stpath nomodel");
+    path.addEventListener('mousemove',e=>showTip(e,st));
+    path.addEventListener('mouseenter',()=>path.classList.add('hover'));
+    path.addEventListener('mouseleave',()=>{path.classList.remove('hover'); hideTip();});
+    svg.appendChild(path);
+  });
+  const host=document.getElementById('mapHost'); host.innerHTML=""; host.appendChild(svg);
+  paintStates(svg);
+}
+function showTip(e,st){
+  const tip=document.getElementById('tip'); const o=STDATA[st];
+  const u=UNIT==="F"?"\u00b0F":"\u00b0C";
+  let html='<div class="tnm">'+st+(o&&o.live?'<span class="tlive">live</span>':'')+'</div>';
+  if(o&&o.live&&o.temp!=null){
+    html+='<div class="ttemp">'+(UNIT==="F"?cToF(o.temp):o.temp)+u+'</div>';
+    html+='<div class="tmeta">'+(o.rh!=null?'Humidity '+o.rh+'% &nbsp; ':'')+(o.pr!=null?'Pressure '+o.pr+' hPa':'')+'</div>';
+  } else {
+    html+='<div class="tnone">no model yet \u2014 not trained</div>';
+  }
+  tip.innerHTML=html; tip.style.display='block';
+  const pad=14; let x=e.clientX+pad, y=e.clientY+pad;
+  const r=tip.getBoundingClientRect();
+  if(x+r.width>window.innerWidth) x=e.clientX-r.width-pad;
+  if(y+r.height>window.innerHeight) y=e.clientY-r.height-pad;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+}
+function hideTip(){document.getElementById('tip').style.display='none';}
+
+// ── run ALL states ──
+function setRun(on,txt){document.getElementById('runDot').classList.toggle('on',on);
+  document.getElementById('runText').textContent=txt; document.getElementById('runBtn').disabled=on;}
+function prog(line){const el=document.getElementById('miniProg');
+  const d=document.createElement('div'); d.textContent=line; el.prepend(d);
+  while(el.children.length>60) el.removeChild(el.lastChild);}
+function attachStream(){
+  if(_es){try{_es.close();}catch(e){}}
+  const es=new EventSource('/run_stream'); _es=es;
+  es.onmessage=async e=>{ try{
+    const ev=JSON.parse(e.data);
+    if(ev.type==='_replay_done') return;
+    if(ev.type==='_end'||ev.type==='all_done'){
+      if(ev.type==='all_done'){ prog('all states done ('+ev.n+')'); }
+      es.close(); _es=null; setRun(false,'done');
+      // reload every live state + repaint. The final ledger write can land a moment
+      // after the end event, so reload, and if nothing came back live, retry once.
+      if(window.__GEO){
+        await loadAllLive(window.__GEO);
+        let anyLive=Object.values(STDATA).some(o=>o&&o.live&&o.temp!=null);
+        if(!anyLive){ await new Promise(r=>setTimeout(r,1500)); await loadAllLive(window.__GEO); }
+        const svg=document.getElementById('indiaSvg'); if(svg)paintStates(svg);
+      }
+      if(_auto){ prog('\u21bb auto-run \u00b7 next cycle\u2026'); setTimeout(runAll, 900); }
+      return;
+    }
+    if(ev.type==='city_start') prog('▶ '+(ev.label||ev.city)+' ('+ev.index+'/'+ev.total+')');
+    else if(ev.type==='city_skip') prog('— '+(ev.label||ev.city)+': skipped (no model)');
+    else if(ev.type==='city_done') prog('✓ '+(ev.label||ev.city)+' done');
+    else if(ev.type==='city_error') prog('✗ '+(ev.label||ev.city)+': '+ev.error);
+    else if(ev.type==='verify' && ev.city) { /* quiet per-day */ }
+    else if(ev.type==='info' && ev.msg) prog(ev.msg);
+  }catch(x){} };
+  es.onerror=()=>{es.close(); _es=null; setRun(false,'idle');};
+}
+function runAll(){
+  setRun(true,'running all states\u2026'); document.getElementById('miniProg').innerHTML='';
+  fetch('/run_all_cycle?mode='+_runMode+'&models=lstm,gru,qlstm,qgru,ann,hqnn')
+    .then(r=>r.json()).then(()=>attachStream())
+    .catch(()=>{setRun(false,'could not start \u2014 is the server running?');});
+}
+let _auto=false, _runMode='multivariate';
+
+async function init(){
+  try{
+    const r=await fetch(GEO_URL); const geo=await r.json(); window.__GEO=geo;
+    await loadAllLive(geo);
+    renderMap(geo);
+  }catch(e){
+    document.getElementById('mapLoad').textContent="Could not load the India map data (network). It loads from a public CDN \u2014 check connectivity.";
+  }
+}
+document.getElementById('runBtn').onclick=runAll;
+document.getElementById('autoBtn').onclick=function(){
+  _auto=!_auto; var b=document.getElementById('autoBtn');
+  b.classList.toggle('on',_auto); b.innerHTML=_auto?'\u23f8 Auto':'\u21bb Auto';
+  if(_auto && !_es) runAll();
+};
+document.getElementById('runModeToggle').addEventListener('click',function(e){
+  var b=e.target.closest('.tg'); if(!b||b.disabled)return;
+  document.querySelectorAll('#runModeToggle .tg').forEach(function(x){x.classList.remove('active');});
+  b.classList.add('active'); _runMode=b.dataset.mode;
+});
+// grey out modes that are closed in config (e.g. univariate), so the map only
+// offers what the dashboard offers. Defaults the selection to an enabled mode.
+fetch('/config').then(function(r){return r.json();}).then(function(cfg){
+  var enabled=(cfg.modes||[]).filter(function(m){return m.enabled;}).map(function(m){return m.key;});
+  if(!enabled.length) return;
+  if(enabled.indexOf(_runMode)<0){ _runMode=enabled[0]; }
+  document.querySelectorAll('#runModeToggle .tg').forEach(function(b){
+    var ok=enabled.indexOf(b.dataset.mode)>=0;
+    b.disabled=!ok;
+    if(!ok) b.title='closed — not available';
+    b.classList.toggle('active', b.dataset.mode===_runMode);
+  });
+}).catch(function(){});
+document.getElementById('unitToggle').addEventListener('click',e=>{
+  const b=e.target.closest('.tg'); if(!b)return;
+  document.querySelectorAll('#unitToggle .tg').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+  UNIT=b.dataset.unit;
+});
+init();
+</script>
+</body>
+</html>

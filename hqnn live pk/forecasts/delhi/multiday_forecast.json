@@ -1,0 +1,114 @@
+{
+  "city": "delhi",
+  "city_label": "Delhi",
+  "run_date": "2026-07-02",
+  "data_through": "2026-07-02",
+  "generated_at": "2026-07-02T06:04:58.883499Z",
+  "forecasts": [
+    {
+      "horizon": 1,
+      "forecast_date": "2026-07-03",
+      "TMP2m": 31.337,
+      "RH2m": 65.901,
+      "PRmsl": 99966.804,
+      "feels_like_c": 37.9,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 31.948,
+          "RH2m": 63.052,
+          "PRmsl": 99927.984
+        },
+        "univariate": {
+          "TMP2m": 30.726,
+          "RH2m": 68.751,
+          "PRmsl": 100005.625
+        }
+      }
+    },
+    {
+      "horizon": 2,
+      "forecast_date": "2026-07-04",
+      "TMP2m": 32.761,
+      "RH2m": 61.58,
+      "PRmsl": 99925.445,
+      "feels_like_c": 39.26,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 32.477,
+          "RH2m": 63.089,
+          "PRmsl": 99853.031
+        },
+        "univariate": {
+          "TMP2m": 33.045,
+          "RH2m": 60.071,
+          "PRmsl": 99997.859
+        }
+      }
+    },
+    {
+      "horizon": 3,
+      "forecast_date": "2026-07-05",
+      "TMP2m": 31.895,
+      "RH2m": 64.709,
+      "PRmsl": 99956.668,
+      "feels_like_c": 39.2,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 32.239,
+          "RH2m": 64.707,
+          "PRmsl": 99956.883
+        },
+        "univariate": {
+          "TMP2m": 31.552,
+          "RH2m": 64.712,
+          "PRmsl": 99956.453
+        }
+      }
+    },
+    {
+      "horizon": 4,
+      "forecast_date": "2026-07-06",
+      "TMP2m": 32.894,
+      "RH2m": 61.352,
+      "PRmsl": 99964.668,
+      "feels_like_c": 39.08,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 32.32,
+          "RH2m": 63.74,
+          "PRmsl": 99934.914
+        },
+        "univariate": {
+          "TMP2m": 33.467,
+          "RH2m": 58.963,
+          "PRmsl": 99994.422
+        }
+      }
+    },
+    {
+      "horizon": 5,
+      "forecast_date": "2026-07-07",
+      "TMP2m": 32.319,
+      "RH2m": 63.893,
+      "PRmsl": 99922.281,
+      "feels_like_c": 40.65,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 32.896,
+          "RH2m": 63.819,
+          "PRmsl": 99876.734
+        },
+        "univariate": {
+          "TMP2m": 31.742,
+          "RH2m": 63.967,
+          "PRmsl": 99967.828
+        }
+      }
+    }
+  ]
+}

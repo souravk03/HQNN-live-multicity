@@ -1,0 +1,114 @@
+{
+  "city": "mumbai",
+  "city_label": "Mumbai",
+  "run_date": "2026-07-02",
+  "data_through": "2026-07-02",
+  "generated_at": "2026-07-02T06:05:08.999593Z",
+  "forecasts": [
+    {
+      "horizon": 1,
+      "forecast_date": "2026-07-03",
+      "TMP2m": 26.233,
+      "RH2m": 89.53,
+      "PRmsl": 100809.953,
+      "feels_like_c": 26.14,
+      "feels_method": "actual",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 26.142,
+          "RH2m": 90.782,
+          "PRmsl": 101170.398
+        },
+        "univariate": {
+          "TMP2m": 26.325,
+          "RH2m": 88.279,
+          "PRmsl": 100449.508
+        }
+      }
+    },
+    {
+      "horizon": 2,
+      "forecast_date": "2026-07-04",
+      "TMP2m": 26.139,
+      "RH2m": 90.501,
+      "PRmsl": 100843.773,
+      "feels_like_c": 26.3,
+      "feels_method": "actual",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 26.299,
+          "RH2m": 91.188,
+          "PRmsl": 101130.703
+        },
+        "univariate": {
+          "TMP2m": 25.98,
+          "RH2m": 89.815,
+          "PRmsl": 100556.844
+        }
+      }
+    },
+    {
+      "horizon": 3,
+      "forecast_date": "2026-07-05",
+      "TMP2m": 26.779,
+      "RH2m": 89.382,
+      "PRmsl": 100735.723,
+      "feels_like_c": 31.08,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 26.917,
+          "RH2m": 91.24,
+          "PRmsl": 101044.367
+        },
+        "univariate": {
+          "TMP2m": 26.641,
+          "RH2m": 87.525,
+          "PRmsl": 100427.078
+        }
+      }
+    },
+    {
+      "horizon": 4,
+      "forecast_date": "2026-07-06",
+      "TMP2m": 26.459,
+      "RH2m": 90.781,
+      "PRmsl": 100851.269,
+      "feels_like_c": 31.35,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 26.944,
+          "RH2m": 92.391,
+          "PRmsl": 101148.297
+        },
+        "univariate": {
+          "TMP2m": 25.973,
+          "RH2m": 89.17,
+          "PRmsl": 100554.242
+        }
+      }
+    },
+    {
+      "horizon": 5,
+      "forecast_date": "2026-07-07",
+      "TMP2m": 26.614,
+      "RH2m": 90.449,
+      "PRmsl": 100781.305,
+      "feels_like_c": 30.77,
+      "feels_method": "heat_index",
+      "modes": {
+        "multivariate": {
+          "TMP2m": 26.73,
+          "RH2m": 92.488,
+          "PRmsl": 101151.594
+        },
+        "univariate": {
+          "TMP2m": 26.498,
+          "RH2m": 88.41,
+          "PRmsl": 100411.016
+        }
+      }
+    }
+  ]
+}

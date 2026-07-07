@@ -1,0 +1,1 @@
+[{"model": "hqnn", "target": "TMP2m", "kind": "retrain", "date": "2026-01-01", "rmse": 0.5796, "mae": 0.4127, "r2": 0.9534}, {"model": "hqnn", "target": "RH2m", "kind": "retrain", "date": "2026-01-01", "rmse": 3.3668, "mae": 2.2964, "r2": 0.9293}, {"model": "hqnn", "target": "PRmsl", "kind": "retrain", "date": "2026-01-01", "rmse": 88.6049, "mae": 67.5287, "r2": 0.9475}]

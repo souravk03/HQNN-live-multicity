@@ -1,0 +1,26 @@
+[
+  {
+    "date": "2026-01-01",
+    "model": "hqnn",
+    "target": "TMP2m",
+    "retrained": true,
+    "mean_change": 4.9e-05,
+    "qweight": null
+  },
+  {
+    "date": "2026-01-01",
+    "model": "hqnn",
+    "target": "RH2m",
+    "retrained": true,
+    "mean_change": -0.001211,
+    "qweight": null
+  },
+  {
+    "date": "2026-01-01",
+    "model": "hqnn",
+    "target": "PRmsl",
+    "retrained": true,
+    "mean_change": 0.000288,
+    "qweight": null
+  }
+]

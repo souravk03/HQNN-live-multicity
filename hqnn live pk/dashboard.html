@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{document.documentElement.setAttribute("data-theme",localStorage.getItem("iwf_theme")||"light");}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Weather Forecast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/diagram.css">
+<link rel="stylesheet" href="css/charts.css">
+</head>
+<body>
+<div class="appwrap">
+<div class="shell">
+  <header class="stickybar">
+    <div class="hctrl">
+      <label class="ctl">
+        <span class="ctll">State</span>
+        <select id="stateSel" class="selbox"></select>
+      </label>
+      <label class="ctl">
+        <span class="ctll">Mode</span>
+        <span class="toggle" id="modeToggle">
+          <button class="tg active" data-mode="multivariate">Multivariate</button>
+          <button class="tg" data-mode="univariate">Univariate</button>
+        </span>
+      </label>
+      <label class="ctl">
+        <span class="ctll">Units</span>
+        <span class="toggle" id="unitToggle">
+          <button class="tg active" data-unit="C">°C</button>
+          <button class="tg" data-unit="F">°F</button>
+        </span>
+      </label>
+      <div class="live-pill st-idle" id="livePill"><span class="dot" id="dot"></span><span id="liveText">ready</span></div>
+      <div class="progwrap" id="progwrap"><div class="progbar"><div class="progfill" id="progfill"></div></div><span class="proglbl" id="proglbl"></span></div>
+      <span class="hactions">
+        <button class="sbtn" id="b_download" title="Download NASA data">↓ Download</button>
+        <button class="sbtn" id="b_tune" disabled title="Tune hyperparameters">Tune</button>
+        <button class="sbtn" id="b_train" disabled title="Train models">Train</button>
+        <button class="sbtn" id="b_fresh" disabled title="wipe checkpoints and train all models from scratch">↺ Fresh</button>
+        <button class="sbtn pausebtn" id="b_pause" disabled title="pause training / tuning">⏸ Pause</button>
+        <button class="sbtn playbtn" id="b_play" disabled title="resume from last save point">▶ Resume</button>
+        <button class="sbtn" id="b_reset" title="restart forward run">Reset</button>
+      </span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="hero-date" id="curDate">—</div>
+        <div class="hero-meta" id="curMeta">Train models, then run the daily cycle to forecast forward.</div>
+      </div>
+      <div class="runwrap">
+        <button class="autorun" id="b_auto" title="Auto-run: keep running cycles back-to-back" disabled>↻ Auto</button>
+        <button class="runbtn" id="b_run" disabled>Run today's cycle →</button>
+      </div>
+    </div>
+    <div class="fcards" id="fcards">
+      <div class="fcard temp"><div class="fhz">forecast day</div><div class="fglyph"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg></div><div class="fk">Temperature</div><div class="fbig"><span id="big_TMP2m">—</span><span class="u">°C</span></div><div class="feelslike" id="feels_TMP2m"></div><div class="fsub" id="sub_TMP2m">awaiting forecast</div></div>
+      <div class="fcard hum"><div class="fhz">forecast day</div><div class="fglyph"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3.5 4 6 7 6 10a6 6 0 0 1-12 0c0-3 2.5-6 6-10z"/></svg></div><div class="fk">Humidity</div><div class="fbig"><span id="big_RH2m">—</span><span class="u">%</span></div><div class="fsub" id="sub_RH2m">awaiting forecast</div></div>
+      <div class="fcard pres"><div class="fhz">forecast day</div><div class="fglyph"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13a9 9 0 0 1 18 0"/><path d="M12 13l4-2.5"/><circle cx="12" cy="13" r="1.4" fill="currentColor" stroke="none"/></svg></div><div class="fk">Pressure</div><div class="fbig"><span id="big_PRmsl">—</span><span class="u">hPa</span></div><div class="fsub" id="sub_PRmsl">awaiting forecast</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="threeDayPanel">
+    <h2>14-day temperature forecast</h2>
+    <div class="ph">Ensemble outlook from the latest run · the 14 days after the forecast day (accuracy decreases with distance)</div>
+    <div class="threeday" id="threeday"></div>
+  </div>
+
+  <div class="panel cyclesum" id="cycleSumPanel">
+    <h2>Latest cycle</h2>
+    <div class="ph">Result of the most recent “Run today’s cycle” — updates every cycle</div>
+    <div class="cyclesumbody" id="cycleSum"><span class="cycsum-empty">No cycle run yet — press “Run today’s cycle”.</span></div>
+  </div>
+
+  <div class="twocol">
+  <div class="panel span2" id="diagramPanel">
+    <div class="panelhd"><h2>How it runs — full pipeline</h2><button class="expbtn" onclick="toggleDiagram()" id="diagramToggle">collapse</button></div>
+    <div class="ph">Data engineering → hyperparameter tuning → full training → daily forward cycle. The active step glows as it runs.</div>
+    <div class="sysmap" id="sysmap"></div>
+  </div>
+
+  <div class="panel span2" data-collapse="ltm">
+    <div class="panelhd"><h2>Live training metrics <span id="ltmphase" class="hpsrc"></span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Charts — left: the initial (first-ever) training; right: live updates as weights are fine-tuned / retrained during the daily cycle. Tables below split the per-model metrics into three that update live: <b>initial training</b> (per epoch), <b>fine-tune</b> (every fine-tune in a cycle), and <b>retrain</b> (every retrain). Note: fine-tune / retrain RMSE/R² are <b>in-sample fit</b> (measured on the window the model just trained on) — a diagnostic that training is working, NOT forecast skill. For true forecast accuracy use "Accuracy by model" below.</div>
+    <div class="ltmwrap">
+      <div class="ltmcharts">
+        <div class="ltmpane">
+          <div class="ltmcap">Initial training</div>
+          <div class="cwrap"><canvas id="ltmCanvas"></canvas></div>
+        </div>
+        <div class="ltmpane">
+          <div class="ltmcap">Live updates (fine-tune / retrain)</div>
+          <div class="cwrap"><canvas id="ltmCanvasLive"></canvas></div>
+        </div>
+      </div>
+      <div class="ltmlegend">
+        <span class="ltmgrp">
+          <button class="ltmtgt active" data-target="TMP2m">Temperature</button>
+          <button class="ltmtgt" data-target="RH2m">Humidity</button>
+          <button class="ltmtgt" data-target="PRmsl">Pressure</button>
+        </span>
+        <span class="ltmgrp">
+          <button class="ltmtab active" data-metric="rmse">RMSE</button>
+          <button class="ltmtab" data-metric="mae">MAE</button>
+          <button class="ltmtab" data-metric="r2">R²</button>
+        </span>
+      </div>
+      <div class="ltmsection">
+        <div class="ltmseclbl">Initial training <span class="ltmsecsub">first-ever training · per epoch</span></div>
+        <div class="ltmtables" id="ltmtablesInit"></div>
+      </div>
+      <div class="ltmsection">
+        <div class="ltmseclbl">Fine-tune <span class="ltmsecsub">updates live every time a model is fine-tuned during a cycle</span></div>
+        <div class="ltmtables" id="ltmtablesFT"></div>
+      </div>
+      <div class="ltmsection">
+        <div class="ltmseclbl">Retrain <span class="ltmsecsub">updates live every time a model is retrained during a cycle</span></div>
+        <div class="ltmtables" id="ltmtablesRT"></div>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div class="panel span2" data-collapse="hparams">
+    <div class="panelhd"><h2>Hyperparameters <span id="hpsrc" class="hpsrc">defaults</span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Each model's own settings · run <b>Tune</b> to optimize them live (values update as trials improve)</div>
+    <div class="hpwrap" id="hparams"><div class="skelgrid"><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w90"></div><div class="skel skel-line w70"></div></div><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w90"></div><div class="skel skel-line w70"></div></div><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w90"></div><div class="skel skel-line w70"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="panel span2" data-collapse="modelparams">
+    <div class="panelhd"><h2>Model parameters <span id="mpMode" class="hpsrc">Multivariate</span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Trainable parameter counts — classical baselines vs their quantum&#8209;optimised counterparts (POC). Switches with the MV / UV toggle.</div>
+    <div class="mwrap" id="modelParams"><div class="skelgrid"><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w70"></div></div><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w70"></div></div><div class="skelcard"><div class="skel skel-line w40"></div><div class="skel skel-line w70"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="panel" data-collapse="accuracy">
+    <div class="panelhd"><h2>Accuracy by model</h2><span class="hdbtns"><button class="expbtn" onclick="exportAccuracyCSV()">↓ CSV</button><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></span></div>
+    <div class="panelbody">
+    <div class="ph">Out-of-sample — verified forecasts vs NASA (prediction made before the actual was known) · lower RMSE / MAE is better, R² closer to 1 is better · n = verified forecasts</div>
+    <div class="mwrap" id="metrics"><div class="empty"><span class="eicon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>Run a cycle to verify forecasts and build accuracy.<span class="ehint">Accuracy appears after the first verified day.</span></div></div>
+    </div>
+  </div>
+  <div class="panel" data-collapse="ledger">
+    <div class="panelhd"><h2>Forecast ledger</h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Upcoming forecasts and verified results, newest first</div>
+    <div class="ledger" id="ledger"><div class="empty"><span class="eicon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></span>No forecasts yet.<span class="ehint">Press “Run today’s cycle” to forecast forward.</span></div></div>
+    </div>
+  </div>
+
+  <div class="panel span2" data-collapse="fvt">
+    <div class="panelhd"><h2>Forecast vs ground truth — over time</h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">NASA ground truth (solid line) with our ensemble forecast (dots) and Open-Meteo actuals (triangles) — for each target</div>
+    <div class="charts" id="charts">
+      <div class="chartbox"><div class="clabel">Temperature (°C)</div><div class="cwrap"><canvas id="ch_TMP2m"></canvas></div></div>
+      <div class="chartbox"><div class="clabel">Humidity (%)</div><div class="cwrap"><canvas id="ch_RH2m"></canvas></div></div>
+      <div class="chartbox"><div class="clabel">Pressure (hPa)</div><div class="cwrap"><canvas id="ch_PRmsl"></canvas></div></div>
+    </div>
+    </div>
+  </div>
+
+  <div class="panel span2" data-collapse="horizon">
+    <div class="panelhd"><h2>Accuracy by lead time</h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Average absolute error grouped by how many days ahead the forecast was made — error is expected to grow with distance. Builds up as more days get verified.</div>
+    <div class="cwrap" style="height:260px"><canvas id="ch_horizon"></canvas></div>
+    <div class="ph" id="horizonEmpty">Run cycles and verify days to populate this.</div>
+    </div>
+  </div>
+
+  <!-- ===== Analysis panels (wired; populate as data becomes available) ===== -->
+  <div class="panel span2" data-collapse="mvuv">
+    <div class="panelhd"><h2>Multivariate vs Univariate <span class="hpsrc">needs both modes verified</span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Head-to-head out-of-sample accuracy of both modes for the same target — the core research comparison, shown side by side.</div>
+    <div class="mwrap" id="mvuvCompare"><div class="empty soon">Side-by-side MV vs UV accuracy appears once BOTH modes have verified forecasts (train + run cycles in each mode).</div></div>
+    </div>
+  </div>
+
+  <div class="twocol span2" style="grid-column:1/-1; padding:0; box-shadow:none; border:none; background:none">
+  <div class="panel" data-collapse="spread">
+    <div class="panelhd"><h2>Model agreement / spread <span class="hpsrc">builds as cycles verify</span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">How far apart the 6 models are each day — a tighter spread means higher ensemble confidence.</div>
+    <div class="cwrap" style="height:240px"><canvas id="ch_spread"></canvas></div>
+    <div class="ph soon" id="spreadEmpty">Per-day model spread builds as cycles verify forecasts.</div>
+    </div>
+  </div>
+
+  <div class="panel" data-collapse="traintime">
+    <div class="panelhd"><h2>Training time / cost per model <span class="hpsrc">after a fresh train</span></h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Wall-clock training time per model — to weigh quantum models' cost against their accuracy.</div>
+    <div class="mwrap" id="trainTime"><div class="empty soon">Per-model training time appears after a fresh train with this build.</div></div>
+    </div>
+  </div>
+  </div>
+  <!-- ===== end analysis panels ===== -->
+
+  <div class="panel" data-collapse="log">
+    <div class="panelhd"><h2>Activity log</h2><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></div>
+    <div class="panelbody">
+    <div class="ph">Every step as it happens, newest first</div>
+    <div class="logwrap" id="log"><div class="empty">Run a cycle to see live activity.</div></div>
+    </div>
+  </div>
+
+  <div class="panel" data-collapse="dailyvs">
+    <div class="panelhd"><h2>Daily forecast vs NASA</h2><span class="hdbtns"><button class="expbtn" onclick="exportDailyCSV()">↓ CSV</button><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></span></div>
+    <div class="panelbody">
+    <div class="ph">One row per day — the ensemble's predicted value next to NASA's actual, per target</div>
+    <div class="histwrap" id="dailyvs"><div class="empty">As each day is verified, its predicted vs NASA values appear here.</div></div>
+    </div>
+  </div>
+
+  <div class="panel" data-collapse="history">
+    <div class="panelhd"><h2>Forecast history — model vs ground truth</h2><span class="hdbtns"><button class="expbtn" onclick="exportHistoryCSV()">↓ CSV</button><button class="expbtn collapse-btn" onclick="toggleCollapse(this)">collapse</button></span></div>
+    <div class="panelbody">
+    <div class="ph">Every model's forecast vs ground truth, with the error</div>
+    <div class="histwrap" id="history"><div class="empty">Verified forecasts will be listed here as ground truth arrives.</div></div>
+    </div>
+  </div>
+  </div>
+</div>
+</div>
+
+<script>
+  // Status page is a placeholder for now — wired later. Clicking it just flags "soon".
+  (function(){
+    var s=document.getElementById('sbStatus');
+    if(s) s.addEventListener('click',function(e){
+      e.preventDefault();
+      s.classList.add('disabled');
+      var lbl=s.querySelector('.sb-label'); if(lbl) lbl.textContent='Status (soon)';
+      setTimeout(function(){ s.classList.remove('disabled'); if(lbl) lbl.textContent='Status'; },1200);
+    });
+  })();
+</script>
+<div class="toastwrap" id="toasts"></div>
+<script src="js/ui.js"></script>
+<script src="js/config.js"></script>
+<script src="js/params.js"></script>
+<script src="js/diagram.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/strip.js"></script>
+<script src="js/ledger.js"></script>
+<script src="js/phase2.js"></script>
+<script src="js/events.js"></script>
+<script src="js/restore.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+{
+  "TMP2m": {
+    "lstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24
+      },
+      "val_mse": null
+    },
+    "qlstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "gru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16
+      },
+      "val_mse": null
+    },
+    "qgru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "ann": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 64
+      },
+      "val_mse": null
+    },
+    "hqnn": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "q_depth": 2,
+        "n_qubits": 6
+      },
+      "val_mse": null
+    }
+  },
+  "RH2m": {
+    "lstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24
+      },
+      "val_mse": null
+    },
+    "qlstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "gru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16
+      },
+      "val_mse": null
+    },
+    "qgru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "ann": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 64
+      },
+      "val_mse": null
+    },
+    "hqnn": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "q_depth": 2,
+        "n_qubits": 6
+      },
+      "val_mse": null
+    }
+  },
+  "PRmsl": {
+    "lstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24
+      },
+      "val_mse": null
+    },
+    "qlstm": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 24,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "gru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16
+      },
+      "val_mse": null
+    },
+    "qgru": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 16,
+        "q_depth": 2,
+        "n_qubits": 4
+      },
+      "val_mse": null
+    },
+    "ann": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "hidden": 64
+      },
+      "val_mse": null
+    },
+    "hqnn": {
+      "params": {
+        "seq_len": 14,
+        "lr": 0.001,
+        "wd": 1e-05,
+        "dropout": 0.0,
+        "q_depth": 2,
+        "n_qubits": 6
+      },
+      "val_mse": null
+    }
+  }
+}
