@@ -4546,5 +4546,41 @@
     "target": "PRmsl",
     "kind": "finetune",
     "mean_change": -6.7e-05
+  },
+  {
+    "date": "2026-07-07",
+    "target": "TMP2m",
+    "kind": "finetune",
+    "mean_change": -6e-06
+  },
+  {
+    "date": "2026-07-07",
+    "target": "RH2m",
+    "kind": "finetune",
+    "mean_change": 1.2e-05
+  },
+  {
+    "date": "2026-07-07",
+    "target": "PRmsl",
+    "kind": "finetune",
+    "mean_change": -3e-05
+  },
+  {
+    "date": "2026-07-08",
+    "target": "TMP2m",
+    "kind": "finetune",
+    "mean_change": 3e-06
+  },
+  {
+    "date": "2026-07-08",
+    "target": "RH2m",
+    "kind": "finetune",
+    "mean_change": -2e-05
+  },
+  {
+    "date": "2026-07-08",
+    "target": "PRmsl",
+    "kind": "finetune",
+    "mean_change": -2.6e-05
   }
 ]
