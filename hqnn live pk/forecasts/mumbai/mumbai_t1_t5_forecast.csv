@@ -27,8 +27,8 @@ run_date,data_through,city,mode,forecast_date,horizon,target,model,prediction,un
 2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,TMP2m,ensemble,26.578,C
 2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,RH2m,hqnn,89.443,%
 2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,RH2m,ensemble,89.443,%
-2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,PRmsl,hqnn,100354.288,Pa
-2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,PRmsl,ensemble,100354.288,Pa
+2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,PRmsl,hqnn,100354.287,Pa
+2026-08-02,2026-08-01,mumbai,multivariate,2026-08-06,5,PRmsl,ensemble,100354.287,Pa
 2026-08-02,2026-08-01,mumbai,univariate,2026-08-02,1,TMP2m,hqnn,27.141,C
 2026-08-02,2026-08-01,mumbai,univariate,2026-08-02,1,TMP2m,ensemble,27.141,C
 2026-08-02,2026-08-01,mumbai,univariate,2026-08-02,1,RH2m,hqnn,87.315,%
