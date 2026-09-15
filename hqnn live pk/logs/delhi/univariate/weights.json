@@ -5770,5 +5770,23 @@
     "target": "PRmsl",
     "kind": "finetune",
     "mean_change": -0.000206
+  },
+  {
+    "date": "2026-09-13",
+    "target": "TMP2m",
+    "kind": "finetune",
+    "mean_change": -3e-06
+  },
+  {
+    "date": "2026-09-13",
+    "target": "RH2m",
+    "kind": "finetune",
+    "mean_change": 7.6e-05
+  },
+  {
+    "date": "2026-09-13",
+    "target": "PRmsl",
+    "kind": "finetune",
+    "mean_change": -0.000186
   }
 ]
